@@ -34,25 +34,24 @@ cc.Class({
     // onLoad () {},
 
     start () {
-        var that = this;
+        //如果音乐开启了则关闭音乐和音效
         this.node.on(cc.Node.EventType.TOUCH_START, function () {
-            if (typeof wx != "undefined") {
-                //主动拉起分享接口
-                cc.loader.loadRes("texture/share", function (err, data) {
-                    wx.shareAppMessage({
-                        title: "不怕，就来PK！",
-                        imageUrl: data.url,
-                        success(res){
-                            console.log("转发成功!!!");
-                          //  cc.director.loadScene("game_scene");
-                        },
-                        fail(res){
-                            console.log("转发失败!!!")
-                        }
-                    })
-                })
+            if (window.isOpen) {
+                //if (cc.audioEngine.isMusicPlaying()) {
+                cc.audioEngine.pauseMusic();//暂停正在播放音乐
+                cc.log("暂停正在播放音乐");
+                this.node.parent.getChildByName('music').getComponent(cc.Sprite).spriteFrame.setTexture(cc.url.raw('resources/music_off.png'));
+                window.isOpen = false;
             }
-        }.bind(this), this)
+            else {
+                // cc.log("music is not playing");
+                cc.audioEngine.resumeMusic();//恢复背景音乐
+                cc.log("恢复背景音乐");
+                this.node.parent.getChildByName('music').getComponent(cc.Sprite).spriteFrame.setTexture(cc.url.raw('resources/music_on.png'));
+                window.isOpen = true;
+            }
+        }.bind(this))
+
     },
 
     // update (dt) {},

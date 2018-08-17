@@ -192,7 +192,7 @@ class RankListRenderer {
             if (index + 1 > pageLen) {
                 return;
             }
-            ctx.drawImage(avatarImg, 120, 10 + itemGapY, 100, 100);
+            ctx.drawImage(avatarImg, 120, 10 + itemGapY, 80, 80);
         };
 
         //名字
@@ -200,7 +200,7 @@ class RankListRenderer {
         ctx.textAlign = "left";
         ctx.baseLine = "middle";
         ctx.font = "30px Helvetica";
-        ctx.fillText(nick, 235, 80 + itemGapY);
+        ctx.fillText(nick, 255, 80 + itemGapY);
 
         //分数
         ctx.fillStyle = "#777063";

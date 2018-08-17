@@ -28,12 +28,16 @@ cc.Class({
             type: cc.Prefab,
             default: null
         },
-        particle_node: {
+        particle_node1: {
+            type: cc.Prefab,
+            default: null
+        },
+        particle_node2: {
             type: cc.Prefab,
             default: null
         },
         //player 初始速度
-        speed_game: 200,
+        speed_game: 300,
         speed_num: 0,
         //player 初始方向
         rotation_game: 360,
@@ -93,13 +97,13 @@ cc.Class({
             if (this.speed_num == 4) {
                 this.speed_num = 0;
             }
-            if (this.rotation_game == 0) {
-                this.rotation_game = 360;
-            }
+            /* if (this.rotation_game == 0) {
+             this.rotation_game = 360;
+             }*/
             this.player.rotation = this.rotation_game;
             this.player.getComponent(cc.RigidBody).linearVelocity = speed_root[this.speed_num];
             this.speed_num += 1;
-            this.rotation_game -= 90;
+            //  this.rotation_game -= 90;
 
 
         }.bind(this));
@@ -118,9 +122,49 @@ cc.Class({
         obstacle1.getComponent(cc.RigidBody).linearVelocity = cc.v2(this.obstacle_speed, 0);
         obstacle2.getComponent(cc.RigidBody).linearVelocity = cc.v2(-this.obstacle_speed, 0);
         obstacle1.x = -this.node.x;
-        obstacle1.y = Math.random() * this.node.y * 0.5 + this.node.y * 0.3;
         obstacle2.x = this.node.x;
-        obstacle2.y = Math.random() * this.node.y * 0.5 + this.node.y * 0.3;
+        var y_r1 = Math.random();
+        var y_r2 = Math.random();
+        var y_root = [
+            326, 163, -7, -181
+        ];
+        if (y_r1 < 0.25) {
+            obstacle1.y = y_root[0];
+            if (y_r2 < 0.3) {
+                obstacle2.y = y_root[1];
+            }else if(0.3 <= y_r2 < 0.6){
+                obstacle2.y = y_root[2];
+            }else {
+                obstacle2.y = y_root[3];
+            }
+        }else if(0.25 <= y_r1 < 0.5){
+            obstacle1.y = y_root[1];
+            if (y_r2 < 0.3) {
+                obstacle2.y = y_root[0];
+            }else if(0.3 <= y_r2 < 0.6){
+                obstacle2.y = y_root[2];
+            }else {
+                obstacle2.y = y_root[3];
+            }
+        }else if(0.5 <= y_r1 < 0.75){
+            obstacle1.y = y_root[2];
+            if (y_r2 < 0.3) {
+                obstacle2.y = y_root[0];
+            }else if(0.3 <= y_r2 < 0.6){
+                obstacle2.y = y_root[1];
+            }else {
+                obstacle2.y = y_root[3];
+            }
+        }else {
+            obstacle1.y = y_root[3];
+            if (y_r2 < 0.3) {
+                obstacle2.y = y_root[0];
+            }else if(0.3 <= y_r2 < 0.6){
+                obstacle2.y = y_root[1];
+            }else {
+                obstacle2.y = y_root[2];
+            }
+        }
     },
     OnPlayertoBall(playerNode, ballNode){
         //ballNode.parent = null;
@@ -155,7 +199,13 @@ cc.Class({
 
 
     particle1(x, y){
-        var par = cc.instantiate(this.particle_node);
+        var par = cc.instantiate(this.particle_node1);
+        par.parent = this.node;
+        par.x = x;
+        par.y = y;
+    },
+    particle2(x, y){
+        var par = cc.instantiate(this.particle_node2);
         par.parent = this.node;
         par.x = x;
         par.y = y;
@@ -215,19 +265,69 @@ cc.Class({
 
     },
     update (dt) {
-        this.obstacle_speed += 0.01;
+        //this.obstacle_speed += 0.01;
         this.speed_game += 0.01;
+        var ob1 = this.node.getChildByName('obstacle1');
+        var ob2 = this.node.getChildByName('obstacle2');
         if (this.player_over == false) {
-            this.node.getChildByName('obstacle1').getComponent(cc.RigidBody).linearVelocity = cc.v2(this.obstacle_speed, 0);
-            this.node.getChildByName('obstacle2').getComponent(cc.RigidBody).linearVelocity = cc.v2(-this.obstacle_speed, 0);
+            ob1.getComponent(cc.RigidBody).linearVelocity = cc.v2(this.obstacle_speed, 0);
+            ob2.getComponent(cc.RigidBody).linearVelocity = cc.v2(-this.obstacle_speed, 0);
         }
-        if (this.node.getChildByName('obstacle1').x > this.node.x * 1.5) {
-            this.node.getChildByName('obstacle1').x = -this.node.x * 1.5;
-            this.node.getChildByName('obstacle1').y = Math.random() * this.node.y * 0.5 + this.node.y * 0.3;
-        }
-        if (this.node.getChildByName('obstacle2').x < -this.node.x * 1.5) {
-            this.node.getChildByName('obstacle2').x = this.node.x * 1.5;
-            this.node.getChildByName('obstacle2').y = Math.random() * this.node.y * 0.5 + this.node.y * 0.3;
+        if (ob1.x > this.node.x * 1.8) {
+            ob1.x = -this.node.x * 1.8;
+            ob1.y = Math.random() * this.node.y * 0.5 + this.node.y * 0.3;
+            ob2.x = this.node.x * 1.8;
+          /*  var y1 = ob1.y - this.node.y / 2 + 0.8 * ob1.height / 2 + 0.8 * ob2.height / 2;
+            var y2 = ob1.y + this.node.y / 2 - 0.8 * ob1.height / 2 - 0.8 * ob2.height / 2;
+            //  console.log(ob1.y,y1,y2);
+            if (Math.random() > 0.5 && y1 < 320) {
+
+                ob2.y = y1;
+            } else {
+                ob2.y = y2;
+            }*/
+            var y_r1 = Math.random();
+            var y_r2 = Math.random();
+            var y_root = [
+                326, 163, -7, -181
+            ];
+            if (y_r1 < 0.25) {
+                ob1.y = y_root[0];
+                if (y_r2 < 0.3) {
+                    ob2.y = y_root[1];
+                }else if(0.3 <= y_r2 < 0.6){
+                    ob2.y = y_root[2];
+                }else {
+                    ob2.y = y_root[3];
+                }
+            }else if(0.25 <= y_r1 < 0.5){
+                ob1.y = y_root[1];
+                if (y_r2 < 0.3) {
+                    ob2.y = y_root[0];
+                }else if(0.3 <= y_r2 < 0.6){
+                    ob2.y = y_root[2];
+                }else {
+                    ob2.y = y_root[3];
+                }
+            }else if(0.5 <= y_r1 < 0.75){
+                ob1.y = y_root[2];
+                if (y_r2 < 0.3) {
+                    ob2.y = y_root[0];
+                }else if(0.3 <= y_r2 < 0.6){
+                    ob2.y = y_root[1];
+                }else {
+                    ob2.y = y_root[3];
+                }
+            }else {
+                ob1.y = y_root[3];
+                if (y_r2 < 0.3) {
+                    ob2.y = y_root[0];
+                }else if(0.3 <= y_r2 < 0.6){
+                    ob2.y = y_root[1];
+                }else {
+                    ob2.y = y_root[2];
+                }
+            }
         }
     },
 });

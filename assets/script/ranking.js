@@ -58,11 +58,11 @@ cc.Class({
                 this.node.parent.getChildByName("ranking_list").active = true;
                 this.node.parent.getChildByName("del").active = true;
                 this.node.parent.getChildByName("ranking_bg").active = true;
-              //  this.node.parent.getChildByName("ranking_list").setLocalZOrder(1);
+                //  this.node.parent.getChildByName("ranking_list").setLocalZOrder(1);
             }.bind(this));
             this.node.parent.getChildByName("ranking_list").on(cc.Node.EventType.TOUCH_MOVE, function (e) {
                 const deltaY = e.getDeltaY();
-                if(typeof wx != "undefined"){
+                if (typeof wx != "undefined") {
                     let openDataContext = wx.getOpenDataContext();
                     openDataContext.postMessage({
                         type: 'Paging',
@@ -86,3 +86,4 @@ cc.Class({
         }
     },
 });
+

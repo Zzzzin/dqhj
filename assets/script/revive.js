@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
+window.revive_num = 0;
 cc.Class({
     extends: cc.Component,
 
@@ -34,7 +34,6 @@ cc.Class({
     // onLoad () {},
 
     start () {
-        var that = this;
         this.node.on(cc.Node.EventType.TOUCH_START, function () {
             if (typeof wx != "undefined") {
                 //主动拉起分享接口
@@ -44,7 +43,9 @@ cc.Class({
                         imageUrl: data.url,
                         success(res){
                             console.log("转发成功!!!");
-                          //  cc.director.loadScene("game_scene");
+                            cc.director.loadScene("game_scene");
+                            window.revive_num = 1;
+                           // this.node.getComponent(cc.Sprite).spriteFrame.setTexture(cc.url.raw('resources/music_off.png'));
                         },
                         fail(res){
                             console.log("转发失败!!!")

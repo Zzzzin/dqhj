@@ -35,8 +35,13 @@ cc.Class({
 
     start () {
         this.node.on(cc.Node.EventType.TOUCH_START, function () {
-            console.log(cc.director);
-            cc.director.loadScene("start");
+            window.score = 0;
+            var fo = cc.fadeOut(0.5);
+            var load = cc.callFunc(function(){
+                cc.director.loadScene("start");
+            },this);
+            var seq = cc.sequence(fo, load);
+            this.node.parent.parent.runAction(seq);
         }.bind(this))
     },
 
